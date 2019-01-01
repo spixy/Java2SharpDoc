@@ -5,7 +5,8 @@ namespace Java2SharpDoc.Models
 	public class ViewModel : INotifyPropertyChanged
 	{
 		private string _inputText;
-		private string _outputText;
+		private string _outputDocText;
+		private string _outputAttribText;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -19,17 +20,27 @@ namespace Java2SharpDoc.Models
 			}
 		}
 
-		public string OutputText
+		public string OutputDocText
 		{
-			get => _outputText;
+			get => _outputDocText;
 			set
 			{
-				_outputText = value;
-				OnPropertyChanged(nameof(OutputText));
+                _outputDocText = value;
+				OnPropertyChanged(nameof(OutputDocText));
 			}
 		}
 
-		private void OnPropertyChanged(string propertyName)
+	    public string OutputAttribText
+	    {
+	        get => _outputAttribText;
+	        set
+	        {
+                _outputAttribText = value;
+	            OnPropertyChanged(nameof(OutputAttribText));
+	        }
+	    }
+
+        private void OnPropertyChanged(string propertyName)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}

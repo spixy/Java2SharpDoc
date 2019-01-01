@@ -31,7 +31,9 @@ namespace Java2SharpDoc
 				return;
 			}
 
-			viewModel.OutputText = converter.Convert(viewModel.InputText);
+			(string doc, string attrib) = converter.Convert(viewModel.InputText);
+		    viewModel.OutputDocText = doc;
+		    viewModel.OutputAttribText = attrib;
 		}
 	}
 }

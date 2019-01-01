@@ -5,14 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Java2SharpDoc"
         mc:Ignorable="d"
-        Title="Java 2 C# Doc" Height="450" Width="800">
+        Title="Java 2 C# Doc" Height="440" Width="720">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="20" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBox Grid.Row="0" Text="{Binding InputText}" />
-        <TextBox Grid.Row="1" Text="{Binding OutputText}" IsReadOnly="True" />
+        <TextBlock Grid.Row="0" Margin="5,0,0,0">Java :(</TextBlock>
+        <TextBox Grid.Row="1" Text="{Binding InputText}"/>
+
+        <TextBlock Grid.Row="3" Margin="5,0,0,0">C# :)</TextBlock>
+        <RichTextBox Grid.Row="4" IsReadOnly="True">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="{Binding OutputDocText, Mode=TwoWay}" Foreground="Green"></Run>
+                    <Run Text="{Binding OutputAttribText, Mode=TwoWay}" Foreground="DarkBlue"></Run>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
     </Grid>
 </Window>

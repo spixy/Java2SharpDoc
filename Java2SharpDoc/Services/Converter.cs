@@ -23,7 +23,7 @@ namespace Java2SharpDoc.Services
 			public const string Summary = "summary";
 			public const string Return = "returns";
 			public const string Exception = "exception";
-			public const string Obsolete = "Obsolete";
+			public const string Obsolete = "System.Obsolete";
 		}
 
 		private string obsoleteMessage;
@@ -32,34 +32,41 @@ namespace Java2SharpDoc.Services
 		/// <summary>
 		/// Converts Java doc to C# doc
 		/// </summary>
-		/// <param name="input">Java documentation</param>
-		/// <returns>C# documentation</returns>
-		public string Convert(string input)
+		public (string Doc, string Attrib) Convert(string input)
 		{
-			input = input.Trim();
-			if (!input.StartsWith(Java.DocStart) || !input.EndsWith(Java.DocEnd))
+			if (!input.TrimStart().StartsWith(Java.DocStart) || !input.TrimEnd().EndsWith(Java.DocEnd))
 			{
-				return null;
+				return ("","");
 			}
 			
 			obsoleteMessage = null;
-			input = input.Replace(Java.DocStart, "").Replace(Java.DocEnd, "");
-			lines = input.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
-			var chunks = FindChunks();
+		    lines = input.Replace(Java.DocStart, "").Replace(Java.DocEnd, "")
+		                 .Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+			var segments = FindSegments();
 
 			var output = new List<string>();
-			foreach (var (start, end) in chunks)
+			foreach (var (start, end) in segments)
 			{
-				output.Add(Convert(start, end));
+			    string line = ConvertSegment(start, end);
+			    if (line != "")
+			    {
+			        output.Add(line);
+			    }
 			}
-			if (obsoleteMessage != null)
-			{
-				output.Add(DocHelper.CreateAttribute(CSharp.Obsolete, obsoleteMessage));
-			}
-			return string.Join(Environment.NewLine, output);
+			
+		    string doc = string.Join(Environment.NewLine, output);
+            string attrib = obsoleteMessage != null ? DocHelper.CreateAttribute(CSharp.Obsolete, obsoleteMessage) : "";
+		    if (doc != "" && attrib != "")
+		    {
+		        attrib = Environment.NewLine + attrib;
+		    }
+		    return (doc, attrib);
 		}
-
-		private IEnumerable<(int Start, int End)> FindChunks()
+        
+        /// <summary>
+        /// Return (start,end) indices of segments
+        /// </summary>
+		private IEnumerable<(int Start, int End)> FindSegments()
 		{
 			var output = new List<(int, int)>();
 			int linesLength = lines.Length;
@@ -89,14 +96,17 @@ namespace Java2SharpDoc.Services
 			return output;
 		}
 
-		private string Convert(int start, int end)
+        /// <summary>
+        /// Convert segment
+        /// </summary>
+		private string ConvertSegment(int startIndex, int endIndex)
 		{
-			if (start >= lines.Length)
+			if (startIndex >= lines.Length)
 			{
 				return "";
 			}
 
-			string lineContent = lines[start].Replace("*", "").Trim();
+			string lineContent = lines[startIndex].Replace("*", "").Trim();
 			if (string.IsNullOrWhiteSpace(lineContent))
 			{
 				return "";
@@ -111,7 +121,7 @@ namespace Java2SharpDoc.Services
 				(string paramName, string content) = SplitNextWord(lineContent);
 				
 				output = content;
-				for (int i = start + 1; i < end; i++)
+				for (int i = startIndex + 1; i < endIndex; i++)
 				{
 					output += AddLine(i);
 				}
@@ -126,7 +136,7 @@ namespace Java2SharpDoc.Services
 				(string paramName, string content) = SplitNextWord(lineContent);
 				
 				output = content;
-				for (int i = start + 1; i < end; i++)
+				for (int i = startIndex + 1; i < endIndex; i++)
 				{
 					output += AddLine(i);
 				}
@@ -154,7 +164,7 @@ namespace Java2SharpDoc.Services
 				lineContent = lineContent.Remove(0, Java.Deprecated.Length).TrimStart();
 
 				output = lineContent;
-				for (int i = start + 1; i < end; i++)
+				for (int i = startIndex + 1; i < endIndex; i++)
 				{
 					output += JoinLine(i);
 				}
@@ -165,7 +175,7 @@ namespace Java2SharpDoc.Services
 			//else
 			{
 				output = lineContent;
-				for (int i = start + 1; i < end; i++)
+				for (int i = startIndex + 1; i < endIndex; i++)
 				{
 					output += AddLine(i);
 				}
@@ -210,6 +220,9 @@ namespace Java2SharpDoc.Services
 			return " " + line;
 		}
 
+        /// <summary>
+        /// Replace @link by see
+        /// </summary>
 		private string ReplaceLinks(string input)
 		{
 			do
@@ -233,6 +246,9 @@ namespace Java2SharpDoc.Services
 			return input;
 		}
 
+        /// <summary>
+        /// Split text to starting word and rest
+        /// </summary>
 		private static (string First, string Next) SplitNextWord(string input)
 		{
 			int firstSpace = input.IndexOf(' ');

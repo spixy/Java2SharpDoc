@@ -10,14 +10,14 @@ namespace Java2SharpDoc
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private readonly Converter converter;
+		private readonly DocConverter converter;
 		private readonly ViewModel viewModel;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			
-			converter = new Converter();
+			converter = new DocConverter();
 			viewModel = new ViewModel();
 			viewModel.PropertyChanged += ModelOnPropertyChanged;
 

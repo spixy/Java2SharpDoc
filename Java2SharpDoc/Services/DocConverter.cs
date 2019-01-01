@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Java2SharpDoc.Helpers;
 
 namespace Java2SharpDoc.Services
 {
-	public class Converter
+	public class DocConverter
 	{
 		private static class Java
 		{
@@ -234,10 +235,15 @@ namespace Java2SharpDoc.Services
 				}
 
 				int endIndex = input.IndexOf("}", startIndex, StringComparison.InvariantCulture);
-				int crefIndex = startIndex + "{@link ".Length;
+			    if (endIndex == -1)
+			    {
+			        break;
+			    }
+
+                int crefIndex = startIndex + "{@link ".Length;
 
 				string before = input.Substring(0, startIndex);
-				string middle = input.Substring(crefIndex, endIndex - crefIndex);
+			    string middle = input.Substring(crefIndex, endIndex - crefIndex).Replace("#", "");
 				string after = input.Substring(endIndex + 1);
 
 				input = before + DocHelper.CreateTagWithVar(CSharp.See, "cref", middle) + after;

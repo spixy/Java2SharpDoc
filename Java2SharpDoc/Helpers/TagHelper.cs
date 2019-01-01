@@ -1,5 +1,5 @@
 ﻿
-namespace Java2SharpDoc.Services
+namespace Java2SharpDoc.Helpers
 {
 	public class DocHelper
 	{		

@@ -16,9 +16,11 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Margin="5,0,0,0">Java :(</TextBlock>
+
         <TextBox Grid.Row="1" Text="{Binding InputText}"/>
 
         <TextBlock Grid.Row="3" Margin="5,0,0,0">C# :)</TextBlock>
+
         <RichTextBox Grid.Row="4" IsReadOnly="True">
             <FlowDocument>
                 <Paragraph>

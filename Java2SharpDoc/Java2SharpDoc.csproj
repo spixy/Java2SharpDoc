@@ -59,7 +59,7 @@
     </ApplicationDefinition>
     <Compile Include="Services\Converter.cs" />
     <Compile Include="Services\SyntaxHighlighter.cs" />
-    <Compile Include="Services\TagHelper.cs" />
+    <Compile Include="Helpers\TagHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

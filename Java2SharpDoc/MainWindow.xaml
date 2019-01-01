@@ -17,15 +17,15 @@
 
         <TextBlock Grid.Row="0" Margin="5,0,0,0">Java :(</TextBlock>
 
-        <TextBox Grid.Row="1" Text="{Binding InputText}"/>
+        <TextBox Grid.Row="1" Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="3" Margin="5,0,0,0">C# :)</TextBlock>
 
         <RichTextBox Grid.Row="4" IsReadOnly="True">
             <FlowDocument>
                 <Paragraph>
-                    <Run Text="{Binding OutputDocText, Mode=TwoWay}" Foreground="Green"></Run>
-                    <Run Text="{Binding OutputAttribText, Mode=TwoWay}" Foreground="DarkBlue"></Run>
+                    <Run Text="{Binding OutputDocText, Mode=OneWay}" Foreground="Green"></Run>
+                    <Run Text="{Binding OutputAttribText, Mode=OneWay}" Foreground="DarkBlue"></Run>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>

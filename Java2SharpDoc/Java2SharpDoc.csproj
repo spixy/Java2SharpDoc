@@ -57,7 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Services\Converter.cs" />
+    <Compile Include="Services\DocConverter.cs" />
     <Compile Include="Services\SyntaxHighlighter.cs" />
     <Compile Include="Helpers\TagHelper.cs" />
     <Page Include="MainWindow.xaml">

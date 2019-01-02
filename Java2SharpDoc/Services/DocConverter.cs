@@ -113,46 +113,47 @@ namespace Java2SharpDoc.Services
 				return "";
 			}
 
-			string output;
-
 			if (lineContent.StartsWith(Java.Param))
 			{
 				lineContent = lineContent.Remove(0, Java.Param.Length).TrimStart();
 
 				(string paramName, string content) = SplitNextWord(lineContent);
-				
-				output = content;
+
+			    lineContent = content;
 				for (int i = startIndex + 1; i < endIndex; i++)
 				{
-					output += AddLine(i);
+				    lineContent += AddLine(i);
 				}
-				output = ReplaceLinks(output);
+			    lineContent = ReplaceLinks(lineContent);
 
-				return "/// " + DocHelper.CreateTagWithVar(CSharp.Param, "name", paramName, output);
+				return "/// " + DocHelper.CreateTagWithVar(CSharp.Param, "name", paramName, lineContent);
 			}
 			if (lineContent.StartsWith(Java.Exception))
 			{
 				lineContent = lineContent.Remove(0, Java.Exception.Length).TrimStart();
 
 				(string paramName, string content) = SplitNextWord(lineContent);
-				
-				output = content;
+
+			    lineContent = content;
 				for (int i = startIndex + 1; i < endIndex; i++)
 				{
-					output += AddLine(i);
+				    lineContent += AddLine(i);
 				}
-				output = ReplaceLinks(output);
+			    lineContent = ReplaceLinks(lineContent);
 
-				return "/// " + DocHelper.CreateTagWithVar(CSharp.Exception, "cref", paramName, output);
+				return "/// " + DocHelper.CreateTagWithVar(CSharp.Exception, "cref", paramName, lineContent);
 			}
 			if (lineContent.StartsWith(Java.Return))
 			{
 				lineContent = lineContent.Remove(0, Java.Return.Length).TrimStart();
 
-				(string _, string content) = SplitNextWord(lineContent);
-				output = ReplaceLinks(content);
+			    for (int i = startIndex + 1; i < endIndex; i++)
+			    {
+			        lineContent += AddLine(i);
+			    }
+			    lineContent = ReplaceLinks(lineContent);
 
-				return "/// " + DocHelper.CreateTag(CSharp.Return, output);
+				return "/// " + DocHelper.CreateTag(CSharp.Return, lineContent);
 			}
 			if (lineContent.StartsWith(Java.See))
 			{
@@ -164,32 +165,30 @@ namespace Java2SharpDoc.Services
 			{
 				lineContent = lineContent.Remove(0, Java.Deprecated.Length).TrimStart();
 
-				output = lineContent;
 				for (int i = startIndex + 1; i < endIndex; i++)
 				{
-					output += JoinLine(i);
+				    lineContent += JoinLine(i);
 				}
-				obsoleteMessage = ReplaceLinks(output.Replace(Environment.NewLine, ""));
+				obsoleteMessage = ReplaceLinks(lineContent.Replace(Environment.NewLine, ""));
 				
 				return "";
 			}
 			//else
 			{
-				output = lineContent;
 				for (int i = startIndex + 1; i < endIndex; i++)
 				{
-					output += AddLine(i);
+				    lineContent += AddLine(i);
 				}
-				output = ReplaceLinks(output);
+			    lineContent = ReplaceLinks(lineContent);
 
-				if (output.Length == 0)
+				if (lineContent.Length == 0)
 				{
-					return DocHelper.CreateTag(CSharp.Summary, output);
+					return DocHelper.CreateTag(CSharp.Summary, lineContent);
 				}
 				else
 				{
 					return "/// " + DocHelper.CreateStartTag(CSharp.Summary) +
-						   Environment.NewLine + "/// " + output +
+						   Environment.NewLine + "/// " + lineContent +
 						   Environment.NewLine + "/// " + DocHelper.CreateEndTag(CSharp.Summary);
 				}
 			}
@@ -205,7 +204,7 @@ namespace Java2SharpDoc.Services
 			if (string.IsNullOrWhiteSpace(line))
 				return "";
 
-			return Environment.NewLine + "/// " + line;
+			return Environment.NewLine + "/// " + line.TrimStart();
 		}
 		
 		private string JoinLine(int index)
@@ -218,7 +217,7 @@ namespace Java2SharpDoc.Services
 			if (string.IsNullOrWhiteSpace(line))
 				return "";
 
-			return " " + line;
+			return " " + line.TrimStart();
 		}
 
         /// <summary>
@@ -260,7 +259,7 @@ namespace Java2SharpDoc.Services
 			int firstSpace = input.IndexOf(' ');
 
 			string firstWord = input.Substring(0, firstSpace);
-			string rest = input.Substring(firstSpace + 1);
+			string rest = input.Substring(firstSpace + 1).TrimStart();
 
 			return (firstWord, rest);
 		}
